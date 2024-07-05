@@ -12,26 +12,26 @@
   outputs = {self, nixpkgs, home-manager}@inputs:
     let
       version = "unstable"; # unstable or 23.11
-      theme = "graphite";
-      desktop = "mate";
-      dmanager = "lightdm";
+      theme = "samurai";
+      desktop = "gnome";
+      dmanager = "gdm";
       shell = "bash";
-      terminal = "alacritty";
+      terminal = "kitty";
       browser = "firefox";
       bootloader = "systemd";
       mkSystem = extraModules:
       nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
-          username = "athena";
-          hostname = "athenaos";
+          username = "daymon";
+          hostname = "laptop";
           hashed = "$6$zjvJDfGSC93t8SIW$AHhNB.vDDPMoiZEG3Mv6UYvgUY6eya2UY5E2XA1lF7mOg6nHXUaaBmJYAMMQhvQcA54HJSLdkJ/zdy8UKX3xL1";
           hashedRoot = "$6$zjvJDfGSC93t8SIW$AHhNB.vDDPMoiZEG3Mv6UYvgUY6eya2UY5E2XA1lF7mOg6nHXUaaBmJYAMMQhvQcA54HJSLdkJ/zdy8UKX3xL1";
           inherit (inputs) home-manager;
         }; # Using // attrs prevents the error 'infinite recursion due to home-manager usage in root default.nix
         modules = let
           #modulesPath = "./nixos/installation";
-          #modulesPathNixPkgs = "${nixpkgs}/nixos/modules"; # Accessing remote NixOS/nixpkgs modules
+          modulesPathNixPkgs = "${nixpkgs}/nixos/modules"; # Accessing remote NixOS/nixpkgs modules
         in
           [
             {
@@ -55,9 +55,9 @@
         "live-image" = mkSystem [
           # Note that if one of the following modules need to input parameters like 'terminal' and 'shell', these are taken in the code above
           ./nixos/installation/iso.nix
-          ./nixos/home-manager/desktops/mate
-          ./nixos/home-manager/terminals/alacritty
-          ./nixos/modules/themes/graphite
+          ./nixos/home-manager/desktops/gnome
+          ./nixos/home-manager/terminals/kitty
+          ./nixos/modules/themes/samurai
           ./nixos/hosts
           home-manager.nixosModules.home-manager
         ];
@@ -83,7 +83,7 @@
       packages."x86_64-linux" =
         (builtins.mapAttrs (n: v: v.config.system.build.isoImage) self.nixosConfigurations)
         // {
-          default = self.packages."x86_64-linux"."live-image";
+          default = self.packages."x86_64-linux"."runtime";
         };
     };
 }
